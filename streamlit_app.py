@@ -144,6 +144,21 @@ styler_with_bars = (df.copy().style
 # ---------------------------------------------------------------------
 # MAIN PANEL
 # ---------------------------------------------------------------------
+with st.container(border=True):
+    st.write('If you can check the full code, please visit:')
+    link = 'https://github.com/JoseParrenoGarcia/Streamlit-pretty-dataframes'
+    label = 'Git Repo'
+    icon = '🔗'
+    styled_link = f"""
+            <a href="{link}" target="_blank" style="color: black; background-color: #EBF5FB; text-decoration: none; border-radius: 1px;">
+                {icon} {label}
+            </a>
+            """
+    st.markdown(styled_link, unsafe_allow_html=True)
+
+    st.write(' ')
+
+
 col1, col2 = st.columns(2)
 
 with col1:
