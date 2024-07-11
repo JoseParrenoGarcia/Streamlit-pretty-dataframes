@@ -23,6 +23,10 @@ def _format_as_percentage(val, prec=0):
     return f'{val:.{prec}%}'
 
 
+def _format_with_dollar_sign(val, prec=0):
+    return f'${val:,.{prec}f}'
+
+
 def _format_positive_negative_background_colour(val, min_value, max_value):
     if val > 0:
         # Normalize positive values to a scale of 0 to 1
@@ -89,6 +93,17 @@ styler_with_colour_gradients = (df.copy().style
                                      subset=['Percentage Change'])
                                 )
 
+# $ sign
+styler_with_dollar_sign = (df.copy().style
+                           .format(_format_with_thousands_commas, subset=thousands_cols)
+                           .format(lambda x: _format_as_percentage(x, 2), subset=perct_cols)
+                           .map(lambda x: _format_positive_negative_background_colour(x, min_value_abs_diff, max_value_abs_diff),
+                                subset=['Difference'])
+                           .map(lambda x: _format_positive_negative_background_colour(x, min_value_perct_diff, max_value_perct_diff),
+                                subset=['Percentage Change'])
+                           .format(_format_with_dollar_sign, subset=['Period_1', 'Period_2', 'Difference'])
+                           )
+
 # ---------------------------------------------------------------------
 # MAIN PANEL
 # ---------------------------------------------------------------------
@@ -126,7 +141,7 @@ with col1:
     with st.container(border=True):
         st.html('<h5>Step 5: Add dollar sign</h5>')
         st.write('xxxx')
-        st.dataframe(df)
+        st.dataframe(styler_with_dollar_sign)
 
     with st.container(border=True):
         st.html('<h5>Step 7: Bar charts in background</h5>')
