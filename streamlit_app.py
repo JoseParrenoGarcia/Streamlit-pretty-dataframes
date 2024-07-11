@@ -53,6 +53,18 @@ def _format_positive_negative_background_colour(val, min_value, max_value):
     return f'background-color: {color_hex}; color: {text_color}'
 
 
+# Add gold, silver, bronze medal emoji
+def _add_medal_emoji(val):
+    if val == 1:
+        return f"{val} 🥇"
+    elif val == 2:
+        return f"{val} 🥈"
+    elif val == 3:
+        return f"{val} 🥉"
+    else:
+        return val
+
+
 # ---------------------------------------------------------------------
 # Generate data to plot
 # ---------------------------------------------------------------------
@@ -65,6 +77,7 @@ mock_data = {
 df = pd.DataFrame(mock_data)
 df['Difference'] = df['Period_2'] - df['Period_1']
 df['Percentage Change'] = np.round(((df['Period_2'] - df['Period_1']) / df['Period_1']), 2)
+df['Percentage Change rank'] = df['Percentage Change'].rank(method='dense', ascending=False).astype(int)
 
 # Raw styler
 raw_styler = df.copy().style
@@ -102,6 +115,18 @@ styler_with_dollar_sign = (df.copy().style
                            .map(lambda x: _format_positive_negative_background_colour(x, min_value_perct_diff, max_value_perct_diff),
                                 subset=['Percentage Change'])
                            .format(_format_with_dollar_sign, subset=['Period_1', 'Period_2', 'Difference'])
+                           )
+
+# With medal emoji
+styler_with_medal_emoji = (df.copy().style
+                           .format(_format_with_thousands_commas, subset=thousands_cols)
+                           .format(lambda x: _format_as_percentage(x, 2), subset=perct_cols)
+                           .map(lambda x: _format_positive_negative_background_colour(x, min_value_abs_diff, max_value_abs_diff),
+                                subset=['Difference'])
+                           .map(lambda x: _format_positive_negative_background_colour(x, min_value_perct_diff, max_value_perct_diff),
+                                subset=['Percentage Change'])
+                           .format(_format_with_dollar_sign, subset=['Period_1', 'Period_2', 'Difference'])
+                           .format(_add_medal_emoji, subset=['Percentage Change rank'])
                            )
 
 # ---------------------------------------------------------------------
@@ -207,4 +232,4 @@ with col2:
     with st.container(border=True):
         st.html('<h5>Step 6: Add column with emojis</h5>')
         st.write('xxxx')
-        st.dataframe(df)
+        st.dataframe(styler_with_medal_emoji)
