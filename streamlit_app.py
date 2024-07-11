@@ -64,7 +64,6 @@ def _add_medal_emoji(val):
     else:
         return val
 
-
 # ---------------------------------------------------------------------
 # Generate data to plot
 # ---------------------------------------------------------------------
@@ -129,6 +128,19 @@ styler_with_medal_emoji = (df.copy().style
                            .format(_add_medal_emoji, subset=['Percentage Change rank'])
                            )
 
+# With bars
+styler_with_bars = (df.copy().style
+                    .format(_format_with_thousands_commas, subset=thousands_cols)
+                    .format(lambda x: _format_as_percentage(x, 2), subset=perct_cols)
+                    .map(lambda x: _format_positive_negative_background_colour(x, min_value_abs_diff, max_value_abs_diff),
+                         subset=['Difference'])
+                    .map(lambda x: _format_positive_negative_background_colour(x, min_value_perct_diff, max_value_perct_diff),
+                         subset=['Percentage Change'])
+                    .format(_format_with_dollar_sign, subset=['Period_1', 'Period_2', 'Difference'])
+                    .format(_add_medal_emoji, subset=['Percentage Change rank'])
+                    .bar(subset=['Period_1', 'Period_2'], color=['red', 'green'])
+                    )
+
 # ---------------------------------------------------------------------
 # MAIN PANEL
 # ---------------------------------------------------------------------
@@ -165,13 +177,44 @@ with col1:
 
     with st.container(border=True):
         st.html('<h5>Step 5: Add dollar sign</h5>')
-        st.write('xxxx')
+        st.write('Adding a dollar sign (or other characters) is also quite easy')
+
+        with st.expander('See code sample', expanded=False):
+            st.code('''
+                    def _format_with_dollar_sign(val, prec=0):
+                        return f'${val:,.{prec}f}'
+    
+                    styler_with_dollar_sign = (df.copy().style
+                               .format(_format_with_dollar_sign, subset=['Period_1', 'Period_2', 'Difference'])
+                               )
+                    ''')
+
         st.dataframe(styler_with_dollar_sign)
 
     with st.container(border=True):
         st.html('<h5>Step 7: Bar charts in background</h5>')
-        st.write('xxxx')
-        st.dataframe(df)
+        st.write('The problem is that Streamlit currently doesnt support all of the Styler functions. As you can see, .bar() method doesnt render in the UI. '
+                 'For more information, check the following link.')
+
+        link = 'https://discuss.streamlit.io/t/pandas-dataframe-bars-dont-show-when-app-is-deployed/26565/2'
+        label = 'Styler bar bug in Streamlit'
+        icon = '🌐'
+        styled_link = f"""
+        <a href="{link}" target="_blank" style="color: black; background-color: #EBF5FB; text-decoration: none; border-radius: 1px;">
+            {icon} {label}
+        </a>
+        """
+        st.markdown(styled_link, unsafe_allow_html=True)
+
+        st.write(' ')
+        with st.expander('See code sample', expanded=False):
+            st.code('''
+                    styler_with_bars = (df.copy().style
+                                        .bar(subset=['Period_1', 'Period_2'], color=['red', 'green'])
+                    )
+                    ''')
+
+        st.dataframe(styler_with_bars)
 
 with col2:
     with st.container(border=True):
@@ -218,8 +261,6 @@ with col2:
             max_value_perct_diff = df['Percentage Change'].max()
             
             styler_with_colour_gradients = (df.copy().style
-                                            .format(_format_with_thousands_commas, subset=thousands_cols)
-                                            .format(lambda x: _format_as_percentage(x, 2), subset=perct_cols)
                                             .map(lambda x: _format_positive_negative_background_colour(x, min_value_abs_diff, max_value_abs_diff),
                                                  subset=['Difference'])
                                             .map(lambda x: _format_positive_negative_background_colour(x, min_value_perct_diff, max_value_perct_diff),
@@ -231,5 +272,22 @@ with col2:
 
     with st.container(border=True):
         st.html('<h5>Step 6: Add column with emojis</h5>')
-        st.write('xxxx')
+        st.write('Emojis can also be added! For example, I created a function to add gold, silver, bronze medals given a rank')
+        with st.expander('See code sample', expanded=False):
+            st.code('''
+                    def _add_medal_emoji(val):
+                        if val == 1:
+                            return f"{val} 🥇"
+                        elif val == 2:
+                            return f"{val} 🥈"
+                        elif val == 3:
+                            return f"{val} 🥉"
+                        else:
+                            return val
+                            
+                    styler_with_medal_emoji = (df.copy().style
+                                               .format(_add_medal_emoji, subset=['Percentage Change rank'])
+                                               )
+                    ''')
+
         st.dataframe(styler_with_medal_emoji)
