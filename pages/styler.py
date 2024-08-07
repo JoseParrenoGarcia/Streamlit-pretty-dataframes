@@ -39,12 +39,12 @@ col1, col2 = st.columns(2)
 
 with col1:
     with st.container(border=True):
-        st.html('<h5>Step 1: Raw dataframe object</h5>')
+        st.subheader('Step 1: Raw dataframe object')
         st.write('You can see thst streamlit automatically adds commas as thousands separators. OK, but not amazing.')
         st.dataframe(df)
 
     with st.container(border=True):
-        st.html('<h5>Step 3: Adding thousands separator and % format</h5>')
+        st.subheader('Step 3: Adding thousands separator and % format')
         st.write('We can mimic the initial st.dataframe() view using defined styler functions')
 
         with st.expander('See code sample', expanded=False):
@@ -67,7 +67,7 @@ with col1:
         st.dataframe(styler_with_thousands_commas)
 
     with st.container(border=True):
-        st.html('<h5>Step 5: Add dollar sign</h5>')
+        st.subheader('Step 5: Add dollar sign')
         st.write('Adding a dollar sign (or other characters) is also quite easy')
 
         with st.expander('See code sample', expanded=False):
@@ -84,12 +84,12 @@ with col1:
 
 with col2:
     with st.container(border=True):
-        st.html('<h5>Step 2: Raw styler object</h5>')
+        st.subheader('Step 2: Raw styler object')
         st.write('The styler messes the UI display. No commas and 6 decimal points')
         st.dataframe(raw_styler)
 
     with st.container(border=True):
-        st.html('<h5>Step 4: +ve & -ve coloured gradients</h5>')
+        st.subheader('Step 4: +ve & -ve coloured gradients')
         st.write('We want a green gradient for positive values and a negative '
                  'gradient for negative values.')
 
@@ -137,7 +137,7 @@ with col2:
         st.dataframe(styler_with_colour_gradients)
 
     with st.container(border=True):
-        st.html('<h5>Step 6: Add column with emojis</h5>')
+        st.subheader('Step 6: Add column with emojis')
         st.write('Emojis can also be added! I created a function to add gold, silver, bronze medals given a rank')
         with st.expander('See code sample', expanded=False):
             st.code('''

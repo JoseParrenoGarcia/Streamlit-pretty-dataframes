@@ -1,7 +1,9 @@
 import streamlit as st
 from pages.pages_format import pages_format
-from utils.synthetic_data import create_synthetic_data
 from st_aggrid import AgGrid, GridOptionsBuilder
+from utils.synthetic_data import create_synthetic_data
+from utils.aggrid_styling import aggrid_cells_formatting
+
 
 # ---------------------------------------------------------------------
 # HOME PAGE - CONFIGURATION
@@ -21,7 +23,7 @@ df = create_synthetic_data()
 # MAIN PANEL
 # ---------------------------------------------------------------------
 with st.container(border=True):
-    st.html('<h5>Standard st.dataframe() view vs Standard AgGrid view</h5>')
+    st.subheader('Standard st.dataframe() view vs Standard AgGrid view')
     st.markdown("- *st.dataframe()* better styled by default with comma separators \n"
                 "- AgGrid can drag columns to a different position \n"
                 "- AgGrid leaves a lot of empty space below \n"
@@ -36,3 +38,17 @@ with st.container(border=True):
     with st.container(border=True):
         st.write('**AgGrid()**')
         standard_AgGrid = AgGrid(df, gridOptions=GridOptionsBuilder.from_dataframe(df).build())
+
+with st.container(border=True):
+    st.subheader('Formatting values in cells')
+    st.markdown("- Thousand comma separators \n"
+                "- Decimal points \n"
+                "- Column width \n"
+                "- Currency symbol \n"
+                )
+
+    formatted_AgGrid = aggrid_cells_formatting(df)
+
+
+
+
