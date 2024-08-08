@@ -73,12 +73,14 @@ def aggrid_cells_formatting(df):
     for input_column_name, (clean_name, style_dict) in column_formatting.items():
         grid_builder.configure_column(input_column_name, header_name=clean_name, **style_dict)
 
-    # # Apply functional formatting separately
-    # for column, funcs in functional_columns.items():
-    #     if 'valueFormatter' in funcs:
-    #         grid_builder.configure_column(column, valueFormatter=funcs['valueFormatter'])
-
     # Build grid options
     gridOptions = grid_builder.build()
 
-    return AgGrid(df, gridOptions=gridOptions, allow_unsafe_jscode=True)
+    # https://streamlit-aggrid.readthedocs.io/en/docs/AgGrid.html
+    return AgGrid(df,
+                  gridOptions=gridOptions,
+                  allow_unsafe_jscode=True,
+                  height=min(500, (len(df))*38),  # 38px per row or 500px
+                  fit_columns_on_grid_load=False,
+                  theme='balham',  # 'streamlit', 'balham', 'alpine', 'material'
+                  )
