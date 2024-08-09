@@ -43,6 +43,49 @@ function(params) {
 }
 """)
 
+# Define JsCode for colouring formatting
+cellStyle = JsCode("""
+function(params) {
+    if (params.value == null || params.value === undefined) {
+        return null;
+    }
+
+    var val = params.value;
+    var minValue = params.column.colDef.cellRendererParams.minValue;
+    var maxValue = params.column.colDef.cellRendererParams.maxValue;
+
+    function interpolateColor(color1, color2, factor) {
+        var result = color1.slice();
+        for (var i = 0; i < 3; i++) {
+            result[i] = Math.round(result[i] + factor * (color2[i] - color1[i]));
+        }
+        return result;
+    }
+
+    function getColorForValue(val, minVal, maxVal) {
+        if (val > 0) {
+            var normalizedVal = val / maxVal;
+            var color = interpolateColor([255, 255, 255], [0, 128, 0], Math.pow(normalizedVal, 0.5));
+        } else if (val < 0) {
+            var normalizedVal = val / minVal;
+            var color = interpolateColor([255, 255, 255], [255, 80, 80], Math.pow(normalizedVal, 0.5));
+        } else {
+            return [255, 255, 255];  // White for zero values
+        }
+        return color;
+    }
+
+    var bgColor = getColorForValue(val, minValue, maxValue);
+    var brightness = (bgColor[0] * 299 + bgColor[1] * 587 + bgColor[2] * 114) / 1000;
+    var textColor = brightness > 128 ? 'black' : 'white';
+
+    return {
+        backgroundColor: 'rgb(' + bgColor.join(',') + ')',
+        color: textColor
+    };
+}
+""")
+
 
 grid_options = {
     'autoSizeStrategy':
@@ -70,7 +113,11 @@ def aggrid_cells_formatting(df):
                                   type=['numericColumn', 'numberColumnFilter', 'customNumericFormat'],
                                   valueGetter=percentage_getter,
                                   valueFormatter=percentage_formatter,
-                                  cellRendererParams={'decimalPoints': 1}
+                                  cellRendererParams={'decimalPoints': 1,
+                                                      'minValue': df['Percentage Change'].min(),
+                                                      'maxValue': df['Percentage Change'].max(),
+                                                      },
+                                  cellStyle=cellStyle,
                                   )
 
     grid_builder.configure_column('Period_1',
