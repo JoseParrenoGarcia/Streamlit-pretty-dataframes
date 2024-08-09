@@ -108,18 +108,6 @@ def aggrid_cells_formatting(df):
     # The data used for filter will not be from the valueFormatter.
     # It will actually be from the valueGetter.
 
-    grid_builder.configure_column('Percentage Change',
-                                  header_name='Percentage Change (%)',
-                                  type=['numericColumn', 'numberColumnFilter', 'customNumericFormat'],
-                                  valueGetter=percentage_getter,
-                                  valueFormatter=percentage_formatter,
-                                  cellRendererParams={'decimalPoints': 1,
-                                                      'minValue': df['Percentage Change'].min(),
-                                                      'maxValue': df['Percentage Change'].max(),
-                                                      },
-                                  cellStyle=cellStyle,
-                                  )
-
     grid_builder.configure_column('Period_1',
                                   header_name='Period 1',
                                   type=['numericColumn', 'numberColumnFilter', 'customNumericFormat'],
@@ -141,7 +129,21 @@ def aggrid_cells_formatting(df):
                                   type=['numericColumn', 'numberColumnFilter', 'customNumericFormat'],
                                   valueGetter=currency_getter,
                                   valueFormatter=currency_formatter,
-                                  cellRendererParams={'decimalPoints': 0, 'currencySymbol': '€'}
+                                  cellRendererParams={'decimalPoints': 0,
+                                                      'currencySymbol': '€',
+                                                      },
+                                  )
+
+    grid_builder.configure_column('Percentage Change',
+                                  header_name='Percentage Change (%)',
+                                  type=['numericColumn', 'numberColumnFilter', 'customNumericFormat'],
+                                  valueGetter=percentage_getter,
+                                  valueFormatter=percentage_formatter,
+                                  cellRendererParams={'decimalPoints': 1,
+                                                      'minValue': df['Percentage Change'].min(),
+                                                      'maxValue': df['Percentage Change'].max()
+                                                      },
+                                  cellStyle=cellStyle,
                                   )
 
     # Build grid options
