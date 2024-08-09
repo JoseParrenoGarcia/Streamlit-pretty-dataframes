@@ -11,7 +11,7 @@ def _format_with_thousands_commas(val):
 
 
 def _format_as_percentage(val, prec=0):
-    return f'{val:.{prec}%}'
+    return f'{val:,.{prec}%}'
 
 
 def _format_with_dollar_sign(val, prec=0):
@@ -63,7 +63,7 @@ def raw_styler_object(df):
 def styler_with_thousands_commas_object(df):
     return (df.copy().style
             .format(_format_with_thousands_commas, subset=thousands_cols)
-            .format(lambda x: _format_as_percentage(x, 2), subset=perct_cols)
+            .format(lambda x: _format_as_percentage(x, 0), subset=perct_cols)
             )
 
 
@@ -75,8 +75,6 @@ def styler_with_colour_gradients_object(df):
     max_value_perct_diff = df['Percentage Change'].max()
 
     return (styler_with_thousands_commas_object(df)
-            .format(_format_with_thousands_commas, subset=thousands_cols)
-            .format(lambda x: _format_as_percentage(x, 2), subset=perct_cols)
             .map(lambda x: _format_positive_negative_background_colour(x, min_value_abs_diff, max_value_abs_diff),
                  subset=['Difference'])
             .map(lambda x: _format_positive_negative_background_colour(x, min_value_perct_diff, max_value_perct_diff),
