@@ -1,4 +1,5 @@
 from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
+import pandas as pd
 
 # Define JsCode for percentage formatting
 percentage_formatter = JsCode("""
@@ -106,17 +107,9 @@ function(params) {
 """)
 
 
-grid_options = {
-    'autoSizeStrategy':
-        {'type': 'fitCellContents',}
-}
-
-
 # Wrapping up function
 def aggrid_cells_formatting(df):
     grid_builder = GridOptionsBuilder.from_dataframe(df)
-
-    grid_builder.configure_grid_options(**grid_options)
 
     grid_builder.configure_default_column(filter=True)
 
@@ -179,7 +172,13 @@ def aggrid_cells_formatting(df):
                            allow_unsafe_jscode=True,
                            height=min(500, (len(df)) * 38),  # 38px per row or 500px
                            fit_columns_on_grid_load=False,
-                           theme='balham')  # Theme can be changed
+                           theme='balham',
+                           data_return_mode='FILTERED_AND_SORTED',
+                           update_mode='MODEL_CHANGED'
+                           )
 
     # https://streamlit-aggrid.readthedocs.io/en/docs/AgGrid.html
-    return grid_response
+    # Create filtered dataframe
+    filtered_df = pd.DataFrame(grid_response['data'])
+
+    return grid_response, filtered_df

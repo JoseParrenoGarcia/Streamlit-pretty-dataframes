@@ -45,10 +45,19 @@ with st.container(border=True):
                 "- Decimal points \n"
                 "- Column width \n"
                 "- Currency symbol \n"
+                "- ... and all of these filterable!! \n"
                 )
 
-    formatted_AgGrid = aggrid_cells_formatting(df)
+    grid_response, filtered_df = aggrid_cells_formatting(df)
 
+
+with st.container(border=True):
+    st.subheader('Passing the filtered table above as an input to other Streamlit objects')
+
+    st.dataframe(filtered_df)
+
+with st.container(border=True):
+    st.subheader('Enabling aggregation through the UI')
 
 
 

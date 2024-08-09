@@ -4,6 +4,7 @@ import numpy as np
 
 def create_synthetic_data():
     mock_data = {
+        "Month": [1, 1, 1, 1, 1, 2, 2],
         "Country": ["US", "IN", "BR", "ES", "AR", "IT", "EG"],
         "Period_1": [50_000, 30_000, 17_000, 14_000, 22_000, 16_000, 1_000],
         "Period_2": [52_000, 37_000, 16_000, 12_000, 21_000, 19_000, 2_100],
