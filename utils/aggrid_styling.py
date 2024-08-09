@@ -86,6 +86,25 @@ function(params) {
 }
 """)
 
+# Define JsCode for emoji formatting
+medalFormatter = JsCode("""
+function(params) {
+    if (params.value == null || params.value === undefined) {
+        return '';
+    }
+    var val = params.value;
+    if (val === 1) {
+        return val + ' 🥇';
+    } else if (val === 2) {
+        return val + ' 🥈';
+    } else if (val === 3) {
+        return val + ' 🥉';
+    } else {
+        return val;
+    }
+}
+""")
+
 
 grid_options = {
     'autoSizeStrategy':
@@ -144,6 +163,12 @@ def aggrid_cells_formatting(df):
                                                       'maxValue': df['Percentage Change'].max()
                                                       },
                                   cellStyle=cellStyle,
+                                  )
+
+    grid_builder.configure_column('Percentage Change rank',
+                                  header_name='Percentage Change rank',
+                                  type=['numericColumn', 'numberColumnFilter', 'customNumericFormat'],
+                                  valueFormatter=medalFormatter,
                                   )
 
     # Build grid options
