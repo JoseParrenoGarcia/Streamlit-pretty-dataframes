@@ -2,7 +2,7 @@ import streamlit as st
 from pages.pages_format import pages_format
 from st_aggrid import AgGrid, GridOptionsBuilder
 from utils.synthetic_data import create_synthetic_data
-from utils.aggrid_styling import aggrid_cells_formatting
+from utils.aggrid_styling import aggrid_cells_formatting, aggrid_aggregation
 
 
 # ---------------------------------------------------------------------
@@ -58,6 +58,8 @@ with st.container(border=True):
 
 with st.container(border=True):
     st.subheader('Enabling aggregation through the UI')
+
+    grid_response_agg = aggrid_aggregation(df)
 
 
 
