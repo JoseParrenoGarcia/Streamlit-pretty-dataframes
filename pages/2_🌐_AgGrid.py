@@ -1,5 +1,4 @@
 import streamlit as st
-from pages.pages_format import pages_format
 from st_aggrid import AgGrid, GridOptionsBuilder
 from utils.synthetic_data import create_synthetic_data
 from utils.aggrid_styling import aggrid_cells_formatting, aggrid_aggregation
@@ -11,8 +10,6 @@ from utils.aggrid_styling import aggrid_cells_formatting, aggrid_aggregation
 st.set_page_config(
     layout="wide",
 )
-
-pages_format()
 
 # ---------------------------------------------------------------------
 # Generate data to plot
