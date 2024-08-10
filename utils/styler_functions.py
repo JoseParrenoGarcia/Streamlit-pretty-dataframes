@@ -92,6 +92,7 @@ def styler_with_medal_emoji_object(df):
             .format(_add_medal_emoji, subset=['Percentage Change rank'])
             )
 
+
 def styler_with_bars_object(df):
     return (df.copy().style
             .bar(subset=['Period_1', 'Period_2'], color='#d65f5f')

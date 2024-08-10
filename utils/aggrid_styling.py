@@ -106,6 +106,28 @@ function(params) {
 }
 """)
 
+# Define JsCode for country formatting
+countryFormatter = JsCode("""
+function(params) {
+    if (params.value == null || params.value === undefined) {
+        return '';
+    }
+    var countryEmojis = {
+        "US": "🇺🇸",
+        "IN": "🇮🇳",
+        "BR": "🇧🇷",
+        "ES": "🇪🇸",
+        "AR": "🇦🇷",
+        "IT": "🇮🇹",
+        "EG": "🇪🇬"
+        // Add more countries as needed
+    };
+    var countryCode = params.value;
+    var emoji = countryEmojis[countryCode] || '';
+    return emoji + ' ' + countryCode;
+}
+""")
+
 
 # Wrapping up function
 def aggrid_cells_formatting(df):
@@ -126,7 +148,11 @@ def aggrid_cells_formatting(df):
                                   type=['numericColumn', 'numberColumnFilter', 'customNumericFormat'],
                                   valueGetter=currency_getter,
                                   valueFormatter=currency_formatter,
-                                  cellRendererParams={'decimalPoints': 0, 'currencySymbol': '€'}
+                                  cellRendererParams={
+                                      'decimalPoints': 0,
+                                      'currencySymbol': '€',
+                                      'maxValue': int(df['Period_1'].max())  # Pass the maxValue as a Python int
+                                  }
                                   )
 
     grid_builder.configure_column('Period_2',
@@ -165,13 +191,19 @@ def aggrid_cells_formatting(df):
                                   valueFormatter=medalFormatter,
                                   )
 
+    grid_builder.configure_column('Country',
+                                  header_name='Country',
+                                  type=['textColumn', 'stringColumnFilter'],
+                                  valueFormatter=countryFormatter,
+                                  )
+
     # Build grid options
     gridOptions = grid_builder.build()
 
     grid_response = AgGrid(df,
                            gridOptions=gridOptions,
                            allow_unsafe_jscode=True,
-                           height=min(2000, (len(df)) * 60),  # 38px per row or 500px
+                           height=min(2000, (len(df)) * 60),  # 60px per row or 2000px
                            fit_columns_on_grid_load=False,
                            theme='balham',
                            data_return_mode='FILTERED_AND_SORTED',
@@ -207,6 +239,7 @@ def aggrid_aggregation(df):
     grid_builder.configure_column('Country',
                                   header_name='Country',
                                   type=['textColumn', 'stringColumnFilter'],
+                                  valueFormatter=countryFormatter,
                                   aggFunc=None,
                                   )
 
