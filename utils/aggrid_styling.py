@@ -133,11 +133,14 @@ function(params) {
 def aggrid_cells_formatting(df):
     grid_builder = GridOptionsBuilder.from_dataframe(df)
 
+    # Enable side bar
     grid_builder.configure_side_bar()
-    grid_builder.configure_default_column(filter=True)
 
-    # https://streamlit-aggrid.readthedocs.io/en/docs/GridOptionsBuilder.html#st_aggrid.grid_options_builder.GridOptionsBuilder.configure_column
-    # https://www.ag-grid.com/javascript-data-grid/column-properties/
+    # # Enable pagination
+    # grid_builder.configure_pagination(paginationAutoPageSize=False, paginationPageSize=3)
+
+    # Configure the default behaviour of all columns
+    grid_builder.configure_default_column(filter=True)
 
     # The value formatter is only used for adding symbols or formatting stuff.
     # The data used for filter will not be from the valueFormatter.
@@ -150,8 +153,7 @@ def aggrid_cells_formatting(df):
                                   valueFormatter=currency_formatter,
                                   cellRendererParams={
                                       'decimalPoints': 0,
-                                      'currencySymbol': '€',
-                                      'maxValue': int(df['Period_1'].max())  # Pass the maxValue as a Python int
+                                      'currencySymbol': '€'
                                   }
                                   )
 
@@ -200,12 +202,24 @@ def aggrid_cells_formatting(df):
     # Build grid options
     gridOptions = grid_builder.build()
 
+    # auto_size_strategy = 'SizeColumnsToFitGridStrategy'
+    # auto_size_strategy = 'SizeColumnsToContentStrategy'
+    #
+    # if auto_size_strategy == "SizeColumnsToFitGridStrategy":
+    #     gridOptions['domLayout'] = 'autoHeight'
+    #     gridOptions['suppressSizeToFit'] = False
+    #     gridOptions['applyColumnDefWidth'] = True  # Fit to grid width
+    # elif auto_size_strategy == "SizeColumnsToContentStrategy":
+    #     gridOptions['domLayout'] = 'autoHeight'
+    #     gridOptions['suppressSizeToFit'] = True
+    #     gridOptions['applyColumnDefWidth'] = False  # Fit to content
+
     grid_response = AgGrid(df,
                            gridOptions=gridOptions,
                            allow_unsafe_jscode=True,
                            height=min(2000, (len(df)) * 60),  # 60px per row or 2000px
                            fit_columns_on_grid_load=False,
-                           theme='balham',
+                           theme='balham', # options: streamlit, alpine, balham, material
                            data_return_mode='FILTERED_AND_SORTED',
                            update_mode='MODEL_CHANGED'
                            )
