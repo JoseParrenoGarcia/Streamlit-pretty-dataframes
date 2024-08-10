@@ -45,7 +45,7 @@ with col1:
     with st.container(border=True):
         st.subheader('Step 1: Raw dataframe object')
         st.write('You can see thst streamlit automatically adds commas as thousands separators. OK, but not amazing.')
-        st.dataframe(df)
+        st.dataframe(df, hide_index=True)
 
     with st.container(border=True):
         st.subheader('Step 3: Adding thousands separator and % format')
@@ -68,7 +68,7 @@ with col1:
                                 )
             ''')
 
-        st.dataframe(styler_with_thousands_commas)
+        st.dataframe(styler_with_thousands_commas, hide_index=True)
 
     with st.container(border=True):
         st.subheader('Step 5: Add dollar sign')
@@ -84,13 +84,13 @@ with col1:
                                )
                     ''')
 
-        st.dataframe(styler_with_dollar_sign)
+        st.dataframe(styler_with_dollar_sign, hide_index=True)
 
 with col2:
     with st.container(border=True):
         st.subheader('Step 2: Raw styler object')
         st.write('The styler messes the UI display. No commas and 6 decimal points')
-        st.dataframe(raw_styler)
+        st.dataframe(raw_styler, hide_index=True)
 
     with st.container(border=True):
         st.subheader('Step 4: +ve & -ve coloured gradients')
@@ -138,7 +138,7 @@ with col2:
                                             )
             ''')
 
-        st.dataframe(styler_with_colour_gradients)
+        st.dataframe(styler_with_colour_gradients, hide_index=True)
 
     with st.container(border=True):
         st.subheader('Step 6: Add column with emojis')
@@ -160,7 +160,7 @@ with col2:
                                                )
                     ''')
 
-        st.dataframe(styler_with_medal_emoji)
+        st.dataframe(styler_with_medal_emoji, hide_index=True)
 
 with st.container(border=True):
     st.subheader('Step 7: Trying to add bars to a cell')
