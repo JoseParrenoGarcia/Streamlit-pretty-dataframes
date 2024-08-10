@@ -1,6 +1,11 @@
 import streamlit as st
 from utils.synthetic_data import create_synthetic_data
-from utils.styler_functions import raw_styler_object, styler_with_thousands_commas_object, styler_with_colour_gradients_object, styler_with_dollar_sign_object, styler_with_medal_emoji_object
+from utils.styler_functions import (raw_styler_object,
+                                    styler_with_thousands_commas_object,
+                                    styler_with_colour_gradients_object,
+                                    styler_with_dollar_sign_object,
+                                    styler_with_medal_emoji_object,
+                                    styler_with_bars_object)
 
 # ---------------------------------------------------------------------
 # HOME PAGE - CONFIGURATION
@@ -27,6 +32,9 @@ styler_with_dollar_sign = (styler_with_dollar_sign_object(df))
 
 # With medal emoji
 styler_with_medal_emoji = (styler_with_medal_emoji_object(df))
+
+# With bars
+styler_with_bars = (styler_with_bars_object(df))
 
 # ---------------------------------------------------------------------
 # MAIN PANEL
@@ -153,3 +161,10 @@ with col2:
                     ''')
 
         st.dataframe(styler_with_medal_emoji)
+
+with st.container(border=True):
+    st.subheader('Step 7: Trying to add bars to a cell')
+    st.write('The only way to do this is through a st.write() and passing a Stlyer as an HTML object... but the UI is awful')
+
+    st.write(styler_with_bars.to_html(escape=False), unsafe_allow_html = True)
+
