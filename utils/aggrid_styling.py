@@ -87,6 +87,44 @@ function(params) {
 }
 """)
 
+bar_cell_style = JsCode("""
+function(params) {
+    if (params.value == null) {
+        return null;
+    }
+
+    var maxValue = Math.max(Math.abs(params.column.colDef.cellRendererParams.maxValue), 
+                            Math.abs(params.column.colDef.cellRendererParams.minValue));
+    var minValue = params.column.colDef.cellRendererParams.minValue;
+
+    // Check if there are negative values
+    var hasNegatives = minValue < 0;
+
+    var percentage = Math.abs(params.value) / maxValue * 50; // Use 50% as max width for each direction
+
+    var color = params.value >= 0 ? '#D1E7DD' : '#F8D7DA';
+
+    var style = {};
+
+    if (hasNegatives) {
+        // If there are negative values, start from the middle
+        if (params.value >= 0) {
+            style.backgroundImage = `linear-gradient(to right, white 50%, ${color} 50%, ${color} ${50 + percentage}%, white ${50 + percentage}%)`;
+        } else {
+            style.backgroundImage = `linear-gradient(to left, white 50%, ${color} 50%, ${color} ${50 + percentage}%, white ${50 + percentage}%)`;
+        }
+    } else {
+        // If all values are positive, start from the left
+        style.backgroundImage = `linear-gradient(to right, ${color} ${percentage}%, white ${percentage}%)`;
+    }
+
+    style.backgroundRepeat = 'no-repeat';
+    style.borderLeft = '1px solid #ccc';
+
+    return style;
+}
+""")
+
 # Define JsCode for emoji formatting
 medalFormatter = JsCode("""
 function(params) {
@@ -151,9 +189,12 @@ def aggrid_cells_formatting(df):
                                   type=['numericColumn', 'numberColumnFilter', 'customNumericFormat'],
                                   valueGetter=currency_getter,
                                   valueFormatter=currency_formatter,
+                                  cellStyle=bar_cell_style,
                                   cellRendererParams={
                                       'decimalPoints': 0,
-                                      'currencySymbol': '€'
+                                      'currencySymbol': '€',
+                                      'maxValue': int(df['Period_1'].max()),
+                                      'minValue': int(df['Period_1'].min())
                                   }
                                   )
 
@@ -170,8 +211,11 @@ def aggrid_cells_formatting(df):
                                   type=['numericColumn', 'numberColumnFilter', 'customNumericFormat'],
                                   valueGetter=currency_getter,
                                   valueFormatter=currency_formatter,
+                                  cellStyle=bar_cell_style,
                                   cellRendererParams={'decimalPoints': 0,
                                                       'currencySymbol': '€',
+                                                      'maxValue': int(df['Difference'].max()),
+                                                      'minValue': int(df['Difference'].min())
                                                       },
                                   )
 
